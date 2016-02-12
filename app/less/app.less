@@ -1,0 +1,60 @@
+/* ==========================================================================
+   App Stylesheet
+   app.less
+   ========================================================================== */
+
+body,html {
+  width: 100%;
+}
+/* Vendor Styles and Setting (bootstrao > variables)
+   ======================================================================== */
+@import "bootstrap.less";
+
+
+/* Mixins (User defined mixins)
+   ======================================================================== */
+
+
+/* Components
+   ======================================================================== */
+@import "components/base.less";
+
+.event {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  opacity: 1;
+  transition: clip-path 2s, -webkit-clip-path 2s;
+  display: flex;
+  align-items: center;
+  transform: translate3d(0,0,0);
+  backface-visibility: hidden;
+  perspective: 1000;
+  .bg {
+    background: center center/cover no-repeat;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+  }
+  .content {
+    position: relative;
+    z-index: 1;
+    text-align:center;
+  }
+}
+
+#mainEvent {
+  .bg {
+    width: 60vw;
+  }
+  .content {
+    width: 40vw;
+  }
+}
+#secondEvent {
+  background: green;
+}
+#thirdEvent {
+  background: purple;
+  bottom: 0;
+}
