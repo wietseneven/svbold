@@ -21,97 +21,158 @@ var events = {
   init: function() {
     this.setProperties();
     this.createContainer();
-    this.drawElements();
+    this.setElemCoords();
+    this.setupElements();
   },
   setProperties: function() {
-    this.width  = $(window).width();
-    this.height = $(window).height();
-    this.name   = 'events';
-    this.htmlElem   = document.getElementsByClassName('event');
-    this.center = [rand(30, 60), rand(30, 60)];
+    this.width    = $(window).width();
+    this.height   = $(window).height();
+    this.name     = 'events';
+    this.htmlElem = document.getElementsByClassName('event');
+    this.elems    = [];
   },
   createContainer: function() {
     this.paper = Raphael(this.name, 0, this.width, this.height);
+    this.paper.canvas.id = "Events";
   },
-  drawElements: function() {
-    this.topCenterPoint = [20, 0];
-    this.rightCenterPoint = [100, 35];
-    this.bottomCenterPoint = [30, 100];
-    this.elems = [];
-
+  setupElements: function() {
     for (var i = 0; i < this.htmlElem.length; i++) {
       var thisElem = this.htmlElem[i];
-      var elem = {};
-      elem.id        = thisElem.id;
-      elem.color     = thisElem.dataset.color;
-      elem.image     = thisElem.dataset.image;
-      elem.title     = thisElem.dataset.title;
-      elem.location  = thisElem.dataset.location;
-      elem.date      = thisElem.dataset.date;
-      elem.startPosX = 0;
-      elem.startPosY = 0;
 
-      this.drawEventPath(i, elem);
-      this.writeEventText(elem);
-      elem.path.hover(function() {
-        console.log('hovering '+ elem.id);
-        //elem.path.animate({path:"M140 100 L190 60"}, 2000);
-      });
+      this.elems.push(new this.elem(thisElem, i));
 
-      this.elems.push(elem);
+      this.elems[i].drawEventPath();
+      this.elems[i].writeEventText();
+      this.elems[i].groupElements();
+      this.elems[i].watchEvent();
+
     }
-
   },
-  elem: function() {
-
+  setElemCoords: function() {
+    this.center            = [rand(30, 60), rand(30, 60)];
+    this.topCenterPoint    = [20, 0];
+    this.rightCenterPoint  = [100, 35];
+    this.bottomCenterPoint = [30, 100];
   },
-  drawEventPath: function(i, elem) {
-    var points,
-        path = '';
-    if (i == 0) points = [[0, 0], this.topCenterPoint, this.center, this.bottomCenterPoint, [0, 100]];
-    if (i == 1) points = [this.topCenterPoint, [100, 0], this.rightCenterPoint, this.center];
-    if (i == 2) points = [this.center, this.rightCenterPoint, [100, 100], this.bottomCenterPoint];
+  elem: function(thisElem, thisNum) {
+    this.id        = thisElem.id;
+    this.num       = thisNum;
+    this.color     = thisElem.dataset.color;
+    this.image     = thisElem.dataset.image;
+    this.title     = thisElem.dataset.title;
+    this.location  = thisElem.dataset.location;
+    this.date      = thisElem.dataset.date;
+    this.startPosX = 0;
+    this.startPosY = 0;
+  },
+  fullScreenPath: function() {
+    return 'M0 0 L'+this.width+' 0 L'+this.width+' '+this.height+' L0 '+this.height+' Z';
+  },
+  hideEvents: function(except) {
 
-    for (var j = 0; j < points.length; j++) {
-      var thisPoint = points[j];
-      var x = thisPoint[0] / 100 * this.width;
-      var y = thisPoint[1] / 100 * this.height;
-
-      if(j == 0) {
-        path += 'M';
-        elem.startPosX = x;
-        elem.startPosY = y;
-      } else {
-        path += ' L';
+    events.elems[except].path.animate({"path": this.fullScreenPath() }, 400, 'backIn', function() {
+      for (var i = 0; i < events.elems.length; i++) {
+        var thisElem = events.elems[i];
+        if (thisElem.num != except) {
+          thisElem.elems.animate({"opacity": 0}, 500);
+        }
       }
-
-      if (elem.startPosX > x) elem.startPosX = x;
-      if (elem.startPosY > y) elem.startPosY = y;
-      path +=  x + ' ' + y;
-    }
-
-    elem.path = this.paper.path(path+"Z");
-    elem.path.attr({fill:'url('+elem.image+')', stroke: "none"});
-  },
-  writeEventText: function(elem) {
-    elem.width  = elem.path.getBBox().width;
-    elem.height = elem.path.getBBox().height;
-
-    var textPosX = (elem.width / 2) + elem.startPosX;
-    var textPosY = (elem.height / 2) + elem.startPosY;
-
-    elem.eventTitle = this.paper.text(textPosX, textPosY, elem.title);
-    elem.eventTitle.attr({ "fill": elem.color});
-    elem.eventTitle.node.setAttribute("class","event--inner_title");
-
-    elem.eventLocation = this.paper.text(textPosX, textPosY + 35, elem.location);
-    elem.eventLocation.attr({ "fill": elem.color});
-    elem.eventLocation.node.setAttribute("class","event--inner_location");
-
-    elem.eventLocation = this.paper.text(textPosX, textPosY + 65, elem.date);
-    elem.eventLocation.attr({ "fill": elem.color});
-    elem.eventLocation.node.setAttribute("class","event--inner_date");
+    });
   }
 };
-events.init();
 
+events.elem.prototype.getPathCoords = function() {
+  if (this.num == 0) return [[0, 0], events.topCenterPoint, events.center, events.bottomCenterPoint, [0, 100]];
+  if (this.num == 1) return [events.topCenterPoint, [100, 0], events.rightCenterPoint, events.center];
+  if (this.num == 2) return [events.center, events.rightCenterPoint, [100, 100], events.bottomCenterPoint];
+};
+events.elem.prototype.transformPathCoords = function(points) {
+  var path = '';
+
+  for (var j = 0; j < points.length; j++) {
+    var thisPoint = points[j];
+    var x = thisPoint[0] / 100 * events.width;
+    var y = thisPoint[1] / 100 * events.height;
+
+    if(j == 0) {
+      path += 'M';
+      this.startPosX = x;
+      this.startPosY = y;
+    } else {
+      path += ' L';
+    }
+
+    if (this.startPosX > x) this.startPosX = x;
+    if (this.startPosY > y) this.startPosY = y;
+    path +=  x + ' ' + y;
+  }
+  path += " Z";
+  return path;
+};
+events.elem.prototype.drawEventPath = function(i, elem) {
+  var points = this.getPathCoords();
+  var path   = this.transformPathCoords(points);
+  this.path  = events.paper.path(path);
+  this.path.attr({fill:'url('+this.image+')', stroke: "none", "cursor": "pointer"});
+};
+
+events.elem.prototype.writeEventText = function() {
+  this.width  = this.path.getBBox().width;
+  this.height = this.path.getBBox().height;
+
+  var textPosX = (this.width / 2) + this.startPosX;
+  var textPosY = (this.height / 2) + this.startPosY;
+
+  this.eventTitle = events.paper.text(textPosX, textPosY, this.title);
+  this.eventTitle.attr({ "fill": this.color});
+  this.eventTitle.node.setAttribute("class","event--inner_title");
+
+  this.eventLocation = events.paper.text(textPosX, textPosY + 35, this.location);
+  this.eventLocation.attr({ "fill": this.color});
+  this.eventLocation.node.setAttribute("class","event--inner_location");
+
+  this.eventDate = events.paper.text(textPosX, textPosY + 65, this.date);
+  this.eventDate.attr({ "fill": this.color});
+  this.eventDate.node.setAttribute("class","event--inner_date");
+};
+
+events.elem.prototype.groupElements = function() {
+  this.elems = events.paper.set();
+  this.elems.push(
+    this.path,
+    this.eventTitle,
+    this.eventLocation,
+    this.eventDate
+
+  );
+};
+
+events.elem.prototype.animatePathLocation = function() {
+  events.setElemCoords();
+
+  for (var i = 0; i < events.elems.length; i++){
+    var thisElem = events.elems[i];
+    var points   = thisElem.getPathCoords();
+    var path     = thisElem.transformPathCoords(points);
+    thisElem.path.animate({'path':path}, 300, 'backOut');
+  }
+};
+
+events.elem.prototype.watchEvent = function() {
+  var elem = this;
+  this.elems.hover(
+    function() {
+      elem.elems.toFront().animate({'transform':"s1.2 1.2"}, 400, 'backOut');
+    },
+    function() {
+      elem.elems.animate({'transform':"s1 1"}, 300, 'backIn');
+    }
+  );
+
+  this.elems.click(
+    function() {
+      events.hideEvents(elem.num);
+    }
+  );
+};
+events.init();
