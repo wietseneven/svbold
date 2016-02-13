@@ -23,25 +23,46 @@ html(lang='en')
       script(src='https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js')
       script(src='https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js')
   body
+    header.boldHeader(style="color:#8db6b8")
+      figure.boldHeader--logo
+        include ../images/boldLogo.svg
+      nav.mainNav
+        a.mainNav--toggle(href="#")
+          .mainNav--toggle_btn
+        .mainNav--menu_wrapper
+          ul.mainNav--menu_list
+            li.mainNav--menu_item
+              a(href="#events") Events
+            li.mainNav--menu_item
+              a(href="#over") Over BOLD
+            li.mainNav--menu_item
+              a(href="#partners") Partners
+            li.mainNav--menu_item
+              a(href="#contact") Contact
+    .events
+      #mainEvent.event(style='color:#8db6b8', data-color="#8db6b8" data-image="images/krakau.jpg" data-proportion="1.414489")
+        .event--inner
+          .event--inner_bg(style="background-image:url(images/krakau.jpg);color: #4f4b86;")
+          .event--inner_content
+            h1.title Studiereis 2016
+            h2.location Krakau
+            time.time 14 <small>t/m</small> april
+      #secondEvent.event(style='color:#c0bddc', data-color="#c0bddc" data-image="images/kitten.jpg" data-proportion="0.626")
+        .event--inner
+          .event--inner_bg(style="background-image:url(images/kitten.jpg);color: #212744;")
+          .event--inner_content
+            h1.title Bier & Pizza
+            h2.location Krakau
+            time.time 14 <small>t/m</small> 18 april
+      #thirdEvent.event(style='color:#4f4b86', data-color="#4f4b86", data-image="images/party-kitten.jpg" data-proportion="1.77736")
+        .event--inner
+          .event--inner_bg(style="background-image:url(images/party-kitten.jpg);color:#2c9585;")
+          .event--inner_content
+            h1.title Bamboofeest
+            h2.location Walabout
+            time.time 14 <small>t/m</small> 18 april
 
-    #mainEvent.event
-      .bg(style="background-image:url(images/krakau.jpg)")
-      .content
-        h1 Studiereis 2016
-        h2 Krakau
-        time 14 t/m 18 april
-    #secondEvent.event
-      .content
-        h1 Studiereis 2016
-        h2 Krakau
-        time 14 t/m 18 april
-    #thirdEvent.event
-      .content
-        h1 Studiereis 2016
-        h2 Krakau
-        time 14 t/m 18 april
-
-
+    #examples
 
     // Scripts
     // ==================================================
