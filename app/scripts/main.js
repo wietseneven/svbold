@@ -15,13 +15,6 @@ function rand(min, max) {
 }
 
 
-var paper = Raphael("sample-2", 0, 400, 400);
-
-var curvePath = paper.path("M110,10s55,25 40,80Z");
-//rectPath.attr({fill:"green"});
-curvePath.attr({fill:"blue"});
-
-
 //var maskInterval = setInterval(function() {
 //  createMasks();
 //}, 5000);
@@ -30,8 +23,57 @@ var events = {
     events: $('.events').children()
   },
   init: function() {
-    this.createMasks();
+  //  this.createMasks();
     this.watchEvents();
+    this.setProperties();
+    this.createContainer();
+    this.drawElements();
+  },
+  setProperties: function() {
+    this.width  = $(window).width();
+    this.height = $(window).height();
+    this.name   = 'events';
+    this.htmlElem   = document.getElementsByClassName('event');
+    this.center = [rand(30, 60), rand(30, 60)];
+  },
+  createContainer: function() {
+    this.paper = Raphael(this.name, 0, this.width, this.height);
+  },
+  drawElements: function() {
+    var topCenterPoint = [20, 0];
+    var rightCenterPoint = [100, 35];
+    var bottomCenterPoint = [30, 100];
+
+    for (var i = 0; i < this.htmlElem.length; i++) {
+      var thisElem = this.htmlElem[i];
+      var elem = {};
+      elem.id         = thisElem.id;
+      elem.color      = thisElem.dataset.color;
+      elem.image      = thisElem.dataset.image;
+      elem.proportion = thisElem.dataset.proportion;
+
+      var points;
+      var path = '';
+      if (i == 0) points = [[0, 0], topCenterPoint, this.center, bottomCenterPoint, [0, 100]];
+      if (i == 1) points = [topCenterPoint, [100, 0], rightCenterPoint, this.center];
+      if (i == 2) points = [this.center, rightCenterPoint, [100, 100], bottomCenterPoint];
+
+      for (var j = 0; j < points.length; j++) {
+        var thisPoint = points[j];
+        var x = thisPoint[0] / 100 * this.width;
+        var y = thisPoint[1] / 100 * this.height;
+
+        j == 0 ? path += 'M' : path += ' L';
+
+        if (elem.startPosX > x) elem.startPosX = x;
+        if (elem.startPosY > x) elem.startPosY = y;
+        path +=  x + ' ' + y;
+      }
+
+      elem.path = this.paper.path(path+"Z");
+      elem.path.attr({fill:'url('+elem.image+')', stroke: "none"});
+
+    }
   },
 
   createMasks: function() {

@@ -104,6 +104,7 @@ body,html {
   transform: translate3d(0,0,0);
   backface-visibility: hidden;
   perspective: 1000;
+  display:none;
   &:hover {
     opacity: .1;
   }
@@ -199,31 +200,3 @@ body,html {
     bottom: 20vh;
   }
 }
-#examples-deep {
-  -webkit-transform-style: preserve-3d;
-  -moz-transform-style: preserve-3d;
-  transform-style: preserve-3d;
-  -webkit-backface-visibility: hidden;
-  -moz-backface-visibility: hidden;
-  backface-visibility: hidden;
-}
-#examples {
-  background: #ddd;
-  padding: 0;
-  position: relative;
-  border-top: solid 1px #fff;
-  border-bottom: solid 1px #fff;
-  svg {
-    path {
-      &:hover {
-        opacity: .1;
-      }
-    }
-  }
-}
-
-.example-anchor path {
-  //fill: none;
-  pointer-events: all;
-}
-
