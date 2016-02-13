@@ -101,10 +101,10 @@ body,html {
 .event {
   display: none;
 }
-#events {
+#Events {
   path {
     &:hover {
-      cursor:pointer;
+      letter-spacing: 40px;
     }
   }
 }
@@ -113,6 +113,10 @@ body,html {
   font-family: @font-family-sans-serif !important;
   text-transform: lowercase;
   pointer-events: none;
+  transition: letter-spacing .5s;
+  &.hover {
+    letter-spacing: 10px;
+  }
 }
 .event--inner_location {
   font-size: 2em !important;
