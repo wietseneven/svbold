@@ -9,6 +9,6 @@
 
 var $ = require('jquery');
 require('raphael');
-var events = require('./event.js');
-
+var events = require('./events.js');
+var singleEvent = require('./singleEvent.js');
 events.init();

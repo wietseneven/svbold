@@ -1,3 +1,5 @@
+var singleEvent = require('./singleEvent.js');
+
 function rand(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -50,6 +52,24 @@ var events = {
   fullScreenPath: function() {
     return 'M0 0 L'+this.width+' 0 L'+this.width+' '+this.height+' L0 '+this.height+' Z';
   },
+  boldPath: function() {
+    return "M523,113.39a120.78,120.78,0,0,0-213.28,1.21L155,382.53a120.78,120.78,0,0,0,107.69,184.1l309.41,0.07A120.78,120.78,0,0,0,677.69,381.38ZM462.17,508.83l-90.89,0a6.11,6.11,0,0,1-5.44-8.87A120.78,120.78,0,0,0,265,325.41a6.11,6.11,0,0,1-5-9.15l45.48-78.7a6.11,6.11,0,0,1,10.4-.28,120.78,120.78,0,0,0,201.53,0,6.11,6.11,0,0,1,10.41.28l45.41,78.73a6.11,6.11,0,0,1-5,9.15A120.78,120.78,0,0,0,467.61,500,6.11,6.11,0,0,1,462.17,508.83ZM416.71,107.89a62.8,62.8,0,1,1-62.8,62.8A62.8,62.8,0,0,1,416.71,107.89ZM203.4,477.36a62.8,62.8,0,1,1,85.79,23A62.8,62.8,0,0,1,203.4,477.36Zm426.63,0a62.8,62.8,0,1,1-23-85.79A62.8,62.8,0,0,1,630,477.36Z";
+  },
+  toBoldPath: function(elem, callback) {
+    var max = 559.760684220507;
+    var scale = ((events.height/max) / 2);
+    var logoHeight = events.height / 2;
+
+    var posx = events.width / 2 - logoHeight / 2 - (120 * scale);  // find new pos depending on where it is initially
+    var posy = events.height / 2 - logoHeight / 2 - 40;
+
+    elem.path.animate({
+      "path": events.boldPath(),
+      "transform" : "t" + posx + "," + posy + ", s"+scale+","+scale+",0,0"
+    }, 1000, 'backIn', function() {
+      if (callback) callback();
+    });
+  },
   hideEvents: function(except) {
     events.elems[except].elems.toFront();
     events.elems[except].path.animate({"path": this.fullScreenPath() }, 400, 'backIn', function() {
@@ -57,8 +77,13 @@ var events = {
         var thisElem = events.elems[i];
         if (thisElem.num != except) {
           thisElem.elems.remove();
+        } else {
+          thisElem.textElems.remove();
         }
       }
+
+      events.toBoldPath(events.elems[except]);
+
     });
   }
 };
@@ -166,13 +191,14 @@ events.elem.prototype.watchEvent = function() {
 
   this.elems.click(
     function() {
-      events.hideEvents(elem.num);
+      events.hideEvents(elem.num, singleEvent.init());
       elem.unwatchEvent();
     }
   );
 };
 events.elem.prototype.unwatchEvent = function() {
   this.elems.unhover();
+  this.elems.unclick();
   this.path.attr({"cursor":"inherit"});
 };
 
