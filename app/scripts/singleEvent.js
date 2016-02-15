@@ -1,9 +1,7 @@
 var paths = require('./paths.js');
-var particles = require('./particles.js');
 var helper = require('./helper');
 var singleEvent = {
   init: function (event, elem) {
-    console.log('hi');
     if (event) {
       this.paper = event.paper;
       helper.setPageColor(elem.color);
@@ -29,14 +27,8 @@ var singleEvent = {
         });
       });
     } else {
-
-//      this.htmlElem = document.getElementsByClassName('event');
-      for (var i = 0; i < this.htmlElem; i++) {
-        var thisElem = htmlElem[i];
-        this.elems.push(new particles.particle(thisElem, i));
-        this.elems[i].drawEventPath(events);
-      }
-
+      this.createTitle();
+      this.createContent();
     }
   },
   createTitle: function () {

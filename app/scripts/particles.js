@@ -60,6 +60,7 @@ particles.particle.prototype.watchEvent = function (events) {
   this.path.click(
     function () {
       events.hideEvents(elem.num, function () {
+
         singleEvent.init(events, elem);
       });
       elem.unwatchEvent();
