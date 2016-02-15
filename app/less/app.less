@@ -3,39 +3,43 @@
    app.less
    ========================================================================== */
 
-body,html {
+body, html {
   width: 100%;
   overflow-x: hidden;
 }
+
 @import "fonts.less";
 /* Vendor Styles and Setting (bootstrao > variables)
    ======================================================================== */
 @import "bootstrap.less";
 
-
 /* Mixins (User defined mixins)
    ======================================================================== */
-
 
 /* Components
    ======================================================================== */
 @import "components/base.less";
 
 .boldHeader {
-
   z-index: 20;
   width: 100%;
+}
+
+.brandColor {
+  transition: .2s;
 }
 .boldHeader--logo {
   width: 100px;
   position: absolute;
   z-index: 20;
-  margin:30px 0 0 50px;
+  margin: 30px 0 0 50px;
   float: left;
   .a {
     fill: currentColor;
+    transition: .2s;
   }
 }
+
 .mainNav {
   position: absolute;
   z-index: 20;
@@ -45,12 +49,14 @@ body,html {
     color: currentColor;
   }
 }
+
 .mainNav--toggle {
   width: 50px;
   height: 35px;
   display: block;
   margin-right: 50px;
 }
+
 .mainNav--toggle_btn, .mainNav--toggle_btn::before, .mainNav--toggle_btn::after {
   width: 50px;
   height: 5px;
@@ -84,11 +90,13 @@ body,html {
   align-items: center;
   transform: translateX(100%);
 }
+
 .mainNav--menu_list {
   padding: 0;
   list-style: none;
   margin: 0 auto;
 }
+
 .mainNav--menu_item {
   a {
     color: #fff;
@@ -98,9 +106,15 @@ body,html {
   }
 }
 
-.event {
-  display: none;
+.template {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
 }
+
+//.event {
+//  display: none;
+//}
 #Events {
   path {
     &:hover {
@@ -108,21 +122,35 @@ body,html {
     }
   }
 }
-.event--inner_title, .event--inner_location, .event--inner_date {
-  font-size: 3em !important;
-  font-family: @font-family-sans-serif !important;
-  text-transform: lowercase;
-  pointer-events: none;
+
+.event--inner_content {
+  position: absolute;
+  max-width: 100vw;
+  width: 400px;
+  text-align: center;
   transition: letter-spacing .5s;
+  white-space: nowrap;
+  transform-origin: center;
   &.hover {
-    letter-spacing: 10px;
+    letter-spacing: 6px;
   }
 }
+.event--inner_title, .event--inner_location, .event--inner_date {
+  font-size: 3em;
+  text-transform: lowercase;
+  margin: .2em 0;
+  transform-origin: center;
+}
 .event--inner_location {
-  font-size: 2em !important;
+  font-size: 2em;
   font-weight: bold;
 }
+
 .event--inner_date {
-  font-size: 1.5em !important;
+  font-size: 1.5em;
   font-weight: bold;
+}
+
+.goHome {
+  cursor: pointer;
 }

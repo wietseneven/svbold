@@ -10,5 +10,9 @@
 var $ = require('jquery');
 require('raphael');
 var events = require('./events.js');
-var singleEvent = require('./singleEvent.js');
+
 events.init();
+
+document.querySelector('.goHome').addEventListener('click', function () {
+  events.init();
+});
